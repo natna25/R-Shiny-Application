@@ -201,6 +201,7 @@ colnames(train_departure_station_agg) = c("departure_station","total_trips","num
                              "delay_external", "delay_infrastructure", "delay_traffic",
                              "delay_stock","delay_station","delay_travelers")
 
+
 print(train_departure_station_agg)
 
 write.csv(train_departure_station_agg, file = "data/analytics/train_station.csv", row.names=FALSE)
@@ -308,6 +309,61 @@ colnames(flights_aiport_agg) = c("airport",
 print(flights_aiport_agg)
 write.csv(flights_aiport_agg, file = "data/analytics/flights_airport.csv", row.names=FALSE)
 
+```
+ 
+ 
+ 
+ 
+```{r}
+
+
+library(shiny)
+library(readr)
+
+#load aggregated datasets
+
+flights_airport_agg = read_csv("data/analytics/flights_airport.csv")
+flights_airline_agg = read_csv("data/analytics/flights_airline.csv")
+
+train_year_agg = read_csv("data/analytics/train_year.csv")
+train_station_agg = read_csv("data/analytics/train_station.csv")
+
+
+plot(factor(flights_airline_agg$airline),flights_airline_agg$flight_count)
+plot(factor(flights_airline_agg$airline),flights_airline_agg$avg_duration)
+plot(factor(flights_airline_agg$airline),flights_airline_agg$avg_distance)
+
+
+plot(factor(flights_airport_agg$airport),flights_airport_agg$flight_count)
+
+
+
+```
+ 
+ 
+ 
+```{r}
+
+
+print(flights_airport_agg["airport"])
+
+
+plot(train_year_agg[["year"]],train_year_agg[["total_trips"]], xlab="year", ylab="total")
+
+
+```
+ 
+ 
+ 
+```{r}
+
+
+train_year_agg[,"total_trips"]
+
+print(as.vector(train_year_agg$year))
+
+
+print(typeof(as.vector(train_year_agg[,"total_trips"])))
 ```
  
  
