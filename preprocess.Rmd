@@ -9,6 +9,8 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 
 ```{r}
 
+library(dplyr)
+
 library(readr)
 
 if(getwd() != "C:/School/Ing5/Data Analytics/R-Shiny-Application"){
@@ -56,7 +58,7 @@ delays = data.frame(delays)
 train_agg = data.frame()
 
 #1-3
-total_trains = aggregate(total_num_trips ~ year, trains, sum) 
+total_trains = aggregate(total_num_trips ~ year, trains, sum)
 total_depart_delays = aggregate(num_late_at_departure ~ year, trains, sum)
 total_arrival_delays = aggregate(num_arriving_late ~ year, trains, sum)
 
@@ -77,7 +79,6 @@ total_train_cancelled = aggregate(num_of_canceled_trains ~ year, trains, sum)
 percent_cancelled_trains = data.frame(year= c(2015,2016,2017,2018), percent_cancelled =total_trains$total_num_trips/total_train_cancelled$num_of_canceled_trains)
 
 
-library(dplyr)
 
 #percent_delays_causes = trains %>% group_by(year)
 #                                   %>% 
@@ -86,10 +87,43 @@ library(dplyr)
 #head(percent_delays_causes)
 
 
+percent_delays_causes = trains %>% group_by(year) %>% summarise(external = mean(delay_cause_external_cause, na.rm=TRUE),infrastructure = mean(delay_cause_rail_infrastructure, na.rm=TRUE), traffic_management=mean(delay_cause_traffic_management, na.rm = TRUE), rolling_stock = mean(delay_cause_rolling_stock, na.rm=TRUE), station = mean(delay_cause_station_management, na.rm=TRUE), travelers = mean(delay_cause_travelers, na.rm=TRUE), )
+
+print(percent_delays_causes$infrastructure)
+
 #save to csv
 
 #make big data frame with all calculated aggregations
-train_year_agg  = data.frame()
+train_year_agg  = data.frame(cbind(percent_delays_causes$year,
+                                   total_trains$total_num_trips,
+                                   total_depart_delays$num_late_at_departure,
+                                   total_arrival_delays$num_arriving_late,
+                                   avg_depart_delays$num_late_at_departure,
+                                   avg_arrival_delays$num_arriving_late,
+                                   total_avg_depart_delay$avg_delay_late_on_arrival,
+                                   total_avg_arrival_delay$avg_delay_late_at_departure,
+                                   avg_depart_delay$avg_delay_late_on_arrival,
+                                   avg_arrival_delay$avg_delay_late_at_departure,
+                                   total_train_cancelled$num_of_canceled_trains,
+                                   percent_cancelled_trains$percent_cancelled,
+                                   percent_delays_causes$external,
+                                   percent_delays_causes$infrastructure,
+                                   percent_delays_causes$traffic_management,
+                                   percent_delays_causes$rolling_stock,
+                                   percent_delays_causes$station,
+                                   percent_delays_causes$travelers
+                                   ))
+colnames(train_year_agg) = c("year","total_trips","num_departure_delays","num_arrival_delays",
+                             "avg_num_departure_delays","avg_num_arrival_delays",
+                             "total_depart_delay","total_arrival_delay",
+                             "avg_depart_delay", "avg_arrival_delay",
+                             "num_trains_cancelled","percent_cancelled",
+                             "delay_external", "delay_infrastructure", "delay_traffic",
+                             "delay_stock","delay_station","delay_travelers")
+print(train_year_agg)
+
+#write_csv(train_year_agg,path="data")
+write.csv(train_year_agg, file = "data/analytics/train_year.csv", row.names=FALSE)
 
 ```
 
@@ -98,8 +132,13 @@ Same aggregations but by train station instead
 
 ```{r}
 
+trains = data.frame(trains)
+delays = data.frame(delays)
+
+train_agg = data.frame()
+
 #1-3
-total_trains = aggregate(total_num_trips ~ departure_station, trains, sum) 
+total_trains = aggregate(total_num_trips ~ departure_station, trains, sum)
 total_depart_delays = aggregate(num_late_at_departure ~ departure_station, trains, sum)
 total_arrival_delays = aggregate(num_arriving_late ~ departure_station, trains, sum)
 
@@ -117,9 +156,54 @@ avg_arrival_delay = aggregate(avg_delay_late_at_departure ~ departure_station, t
 
 #10-11
 total_train_cancelled = aggregate(num_of_canceled_trains ~ departure_station, trains, sum)
-percent_cancelled_trains = data.frame(stations= distinct(tibble(trains$departure_station) ), percent_cancelled =total_trains$total_num_trips/total_train_cancelled$num_of_canceled_trains)
+percent_cancelled_trains = data.frame(departure_station=total_train_cancelled$departure_station , percent_cancelled =total_trains$total_num_trips/total_train_cancelled$num_of_canceled_trains)
 
-percent_cancelled_trains
+
+percent_delays_causes = trains %>% group_by(departure_station) %>% summarise(
+                                            external =mean(delay_cause_external_cause,na.rm=TRUE),
+                                            infrastructure = mean(delay_cause_rail_infrastructure, na.rm=TRUE),
+                                            traffic_management=mean(delay_cause_traffic_management, na.rm = TRUE),
+                                            rolling_stock = mean(delay_cause_rolling_stock, na.rm=TRUE),
+                                            station = mean(delay_cause_station_management, na.rm=TRUE),
+                                            travelers = mean(delay_cause_travelers, na.rm=TRUE), )
+
+
+
+#save to csv
+
+#make big data frame with all calculated aggregations
+train_departure_station_agg  = data.frame(total_trains$departure_station,
+                              cbind(
+                                    total_trains$total_num_trips,
+                                   total_depart_delays$num_late_at_departure,
+                                   total_arrival_delays$num_arriving_late,
+                                   avg_depart_delays$num_late_at_departure,
+                                   avg_arrival_delays$num_arriving_late,
+                                   total_avg_depart_delay$avg_delay_late_on_arrival,
+                                   total_avg_arrival_delay$avg_delay_late_at_departure,
+                                   avg_depart_delay$avg_delay_late_on_arrival,
+                                   avg_arrival_delay$avg_delay_late_at_departure,
+                                   total_train_cancelled$num_of_canceled_trains,
+                                   percent_cancelled_trains$percent_cancelled,
+                                   percent_delays_causes$external,
+                                   percent_delays_causes$infrastructure,
+                                   percent_delays_causes$traffic_management,
+                                   percent_delays_causes$rolling_stock,
+                                   percent_delays_causes$station,
+                                   percent_delays_causes$travelers
+                                   ))
+
+colnames(train_departure_station_agg) = c("departure_station","total_trips","num_departure_delays","num_arrival_delays",
+                             "avg_num_departure_delays","avg_num_arrival_delays",
+                             "total_depart_delay","total_arrival_delay",
+                             "avg_depart_delay", "avg_arrival_delay",
+                             "num_trains_cancelled","percent_cancelled",
+                             "delay_external", "delay_infrastructure", "delay_traffic",
+                             "delay_stock","delay_station","delay_travelers")
+
+print(train_departure_station_agg)
+
+write.csv(train_departure_station_agg, file = "data/analytics/train_station.csv", row.names=FALSE)
 
 ```
 
@@ -154,12 +238,76 @@ print(head(airports))
 
 
 ```{r}
-
+# 1-7
 total_flights = flights %>% group_by(AIRLINE) %>% tally(name="flight_count")
 total_delayed_flights = flights %>% group_by(AIRLINE) %>% filter(DEPARTURE_DELAY > 0) %>% tally(name="delay_count")
-avg_flight_time = flights %>% group_by(AIRLINE) %>% summarise( mean = mean(ELAPSED_TIME))
+avg_flight_time = flights %>% group_by(AIRLINE) %>% summarise(duration = mean(ELAPSED_TIME,na.rm=TRUE))
+avg_flight_distance = flights %>% group_by(AIRLINE) %>% summarise(distance = mean(DISTANCE, na.rm=TRUE))
+total_flight_distance = flights %>% group_by(AIRLINE) %>% summarise(distance = sum(DISTANCE) )
+avg_depart_delay = flights %>% group_by(AIRLINE) %>% summarise(delay = mean(DEPARTURE_DELAY,na.rm=TRUE))
+avg_arrival_delay = flights %>% group_by(AIRLINE) %>% summarise(delay = mean(ARRIVAL_DELAY,na.rm=TRUE))
 
-avg_flight_time
+flights_airline_agg = data.frame(total_flights$AIRLINE,
+                                 cbind(total_flights$flight_count,
+                                       total_delayed_flights$delay_count,
+                                       avg_flight_time$duration,
+                                       avg_flight_distance$distance,
+                                       total_flight_distance$distance,
+                                       avg_depart_delay$delay,
+                                       avg_arrival_delay$delay))
+
+colnames(flights_airline_agg) = c("airline",
+                                  "flight_count",
+                                  "delay_count",
+                                  "avg_duration",
+                                  "avg_distance",
+                                  "total_distance",
+                                  "avg_depart_delay",
+                                  "avg_arrival_delay")
+
+print(flights_airline_agg)
+write.csv(flights_airline_agg, file = "data/analytics/flights_airline.csv", row.names=FALSE)
+
 
 ```
 
+
+
+ same aggragations but groupping by airport instead of airline
+ 
+ 
+```{r}
+# 1-7
+total_flights = flights %>% group_by(ORIGIN_AIRPORT) %>% tally(name="flight_count")
+total_delayed_flights = flights %>% group_by(ORIGIN_AIRPORT) %>% filter(DEPARTURE_DELAY > 0) %>% tally(name="delay_count")
+avg_flight_time = flights %>% group_by(ORIGIN_AIRPORT) %>% summarise(duration = mean(ELAPSED_TIME,na.rm=TRUE))
+avg_flight_distance = flights %>% group_by(ORIGIN_AIRPORT) %>% summarise(distance = mean(DISTANCE, na.rm=TRUE))
+total_flight_distance = flights %>% group_by(ORIGIN_AIRPORT) %>% summarise(distance = sum(DISTANCE) )
+avg_depart_delay = flights %>% group_by(ORIGIN_AIRPORT) %>% summarise(delay = mean(DEPARTURE_DELAY,na.rm=TRUE))
+avg_arrival_delay = flights %>% group_by(ORIGIN_AIRPORT) %>% summarise(delay = mean(ARRIVAL_DELAY,na.rm=TRUE))
+
+
+flights_aiport_agg = data.frame(total_flights$ORIGIN_AIRPORT,
+                                 cbind(total_flights$flight_count,
+                                       total_delayed_flights$delay_count,
+                                       avg_flight_time$duration,
+                                       avg_flight_distance$distance,
+                                       total_flight_distance$distance,
+                                       avg_depart_delay$delay,
+                                       avg_arrival_delay$delay))
+
+colnames(flights_aiport_agg) = c("airport",
+                                  "flight_count",
+                                  "delay_count",
+                                  "avg_duration",
+                                  "avg_distance",
+                                  "total_distance",
+                                  "avg_depart_delay",
+                                  "avg_arrival_delay")
+
+print(flights_aiport_agg)
+write.csv(flights_aiport_agg, file = "data/analytics/flights_airport.csv", row.names=FALSE)
+
+```
+ 
+ 
