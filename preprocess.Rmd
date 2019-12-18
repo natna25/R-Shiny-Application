@@ -364,6 +364,10 @@ print(as.vector(train_year_agg$year))
 
 
 print(typeof(as.vector(train_year_agg[,"total_trips"])))
+
+
+pie(train_year_agg[0,"year"],cbind(train_year_agg[0,"delay_external"],train_year_agg[0,"delay_infrastructure"]) )
+
 ```
  
  
