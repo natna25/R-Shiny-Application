@@ -4,11 +4,11 @@ library(readr)
 
 #load aggregated datasets
 
-flights_airport_agg = read_csv("../data/analytics/flights_airport.csv")
-flights_airline_agg = read_csv("../data/analytics/flights_airline.csv")
+flights_airport_agg = read_csv("flights_airport.csv")
+flights_airline_agg = read_csv("flights_airline.csv")
 
-train_year_agg = read_csv("../data/analytics/train_year.csv")
-train_station_agg = read_csv("../data/analytics/train_station.csv")
+train_year_agg = read_csv("train_year.csv")
+train_station_agg = read_csv("train_station.csv")
 
 
 # Define UI for application that draws a histogram

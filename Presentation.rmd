@@ -31,6 +31,10 @@ The main goal of this R project is to study and create a dashboard from 2 datase
 
 #### http://rpubs.com/antoineth/561272
 
+-shiny app link:
+
+#### https://antoinethery.shinyapps.io/shiny_dashboard/
+
 ## SNCF | Discovering the dataset
 
 The SNCF dataset containing various information about trains : 
