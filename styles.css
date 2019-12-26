@@ -9,11 +9,3 @@
     width: 400px !important;
     height: 170px !important;
   }
-
-
-
-  slides > slide:not(.nobackground):before {
-    width: 150px;
-    height: 75px;
-    background-size: 150px 75px;
-  }

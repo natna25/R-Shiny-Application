@@ -371,3 +371,26 @@ pie(train_year_agg[0,"year"],cbind(train_year_agg[0,"delay_external"],train_year
 ```
  
  
+ 
+```{r}
+library(ggplot2)
+
+
+
+ggplot(data.frame(flights_airline_agg), aes(x=airline, y=avg_distance)) + geom_bar(stat="identity", color='darkblue', fill="blue")
+
+
+ggplot(data.frame(flights_airline_agg), aes(x=airline, )) + geom_bar(stat="identity", color='darkblue', fill="blue")
+
+
+```
+ 
+ 
+ 
+```{r}
+
+
+ggplot(data.frame(train_station_agg), aes(x=train_station_agg[["departure_station"]], y=train_station_agg[["total_trips"]] ) ) + geom_bar(stat="identity", color='darkblue', fill="blue")
+```
+ 
+ 

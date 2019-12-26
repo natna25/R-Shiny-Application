@@ -22,22 +22,18 @@ The main goal of this R project is to study and create a dashboard from 2 datase
 
   1. The first dataset : **SNCF trains**
   2. The second one : **2015 US flights**
-
 - github link:
-
-#### https://github.com/natna25/R-Shiny-Application
+ https://github.com/natna25/R-Shiny-Application
 
 - rpubs link:
-
-#### http://rpubs.com/antoineth/561272
+ http://rpubs.com/antoineth/561272
 
 -shiny app link:
-
-#### https://antoinethery.shinyapps.io/shiny_dashboard/
+ https://antoinethery.shinyapps.io/shiny_dashboard/
 
 ## SNCF | Discovering the dataset
 
-The SNCF dataset containing various information about trains : 
+The SNCF dataset containing various information about trains. Our main goal is to provide a visualisation along years and stations throught the dashboard. 
 
 ```{r, include=FALSE}
 library(dplyr)
@@ -55,7 +51,7 @@ kable(trains[1:4,1:6])
 ```
 
 ## SNCF | Preprocess, aggregation by date
-Let's determine the The average departure delay time of delayed trains
+Let's determine the average departure delay time of delayed trains
 ```{r, echo=FALSE}
 trains = data.frame(trains)
 delays = data.frame(delays)
@@ -71,7 +67,7 @@ plot(factor(avg_depart_delay$year), avg_depart_delay$avg_delay_late_on_arrival)
 
 ## 2015 US flights | Discovering the dataset
 
-The 2015 US flights dataset : 
+The 2015 US flights dataset. For this one, our goal is to provide a visualisation of data according the different airline and airport. 
 
 ```{r, include=FALSE}
 
@@ -101,6 +97,8 @@ plot(factor(avg_flight_distance$AIRLINE),avg_flight_distance$distance)
 
 
 ## Visualisation throught a dashboard
-The dashboard we have created thanks the different data that we have pre-processed
+Here is the dashboard we have created thanks the different data pre-processed.
+The main goal of our dashboard is to provide a clear view of both dataset thanks tab panel and linked tabs.
+
 ![map_img](dashboard.png)
 
